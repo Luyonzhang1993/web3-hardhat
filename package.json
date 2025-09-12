@@ -13,7 +13,8 @@
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/hardhat-verify": "^2.1.1",
     "dotenv": "^17.2.2",
-    "hardhat": "^2.22.2"
+    "hardhat": "^2.22.2",
+    "hardhat-deploy": "^1.0.4"
   },
   "dependencies": {
     "@chainlink/contracts": "^1.0.0",

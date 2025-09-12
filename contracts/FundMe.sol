@@ -11,7 +11,7 @@ contract FundMe {
 
     uint256 constant TARGET = 1000 * 10 ** 18;
 
-    AggregatorV3Interface internal dataFeed;
+    AggregatorV3Interface public dataFeed;
 
     uint256 deploymentTimestamp;
 

@@ -1,7 +1,8 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-verify");
 // tasks import
-require("./tasks")
+require("./tasks");
+require("hardhat-deploy");
 
 const dotenv = require('@chainlink/env-enc');
 
@@ -27,5 +28,13 @@ module.exports = {
     },
     sourcify: {
         enabled: true
+    },
+    namedAccounts: {
+        firstAccount: {
+            default: 0
+        },
+        secondAccount: {
+            default: 1
+        }
     }
 };
