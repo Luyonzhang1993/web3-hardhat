@@ -3,6 +3,9 @@ require("@nomicfoundation/hardhat-verify");
 // tasks import
 require("./tasks");
 require("hardhat-deploy");
+require("@nomicfoundation/hardhat-ethers");
+require("hardhat-deploy");
+require("hardhat-deploy-ethers");
 
 const dotenv = require('@chainlink/env-enc');
 
@@ -12,8 +15,8 @@ const { SEPOLIA_URL, ETHERSCAN_API_KEY, PRIVATE_KEY, PRIVATE_KEY_1 } = process.e
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-    // defaultNetwork: "hardhat",
     solidity: "0.8.20",
+    defaultNetwork: "hardhat",
     networks: {
         sepolia: {
             url: SEPOLIA_URL,
@@ -22,9 +25,10 @@ module.exports = {
         }
     },
     etherscan: {
-        apiKey: {
-            sepolia: ETHERSCAN_API_KEY
-        }
+        // apiKey: {
+        //     sepolia: ETHERSCAN_API_KEY
+        // }
+        apiKey: ETHERSCAN_API_KEY
     },
     sourcify: {
         enabled: true
