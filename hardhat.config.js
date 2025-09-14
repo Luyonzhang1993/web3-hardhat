@@ -17,6 +17,9 @@ const { SEPOLIA_URL, ETHERSCAN_API_KEY, PRIVATE_KEY, PRIVATE_KEY_1 } = process.e
 module.exports = {
     solidity: "0.8.20",
     defaultNetwork: "hardhat",
+    mocha: {
+        timeout: 600 * 1000,
+    },
     networks: {
         sepolia: {
             url: SEPOLIA_URL,
@@ -40,5 +43,8 @@ module.exports = {
         secondAccount: {
             default: 1
         }
+    },
+    gasReporter: {
+        enabled: true,
     }
 };

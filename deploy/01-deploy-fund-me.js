@@ -33,12 +33,12 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         waitConfirmations: confirmations
     });
 
-    if (hre.network.config.chainId === 11155111 && ETHERSCAN_API_KEY) {
-        await hre.run("verify:verify", {
-            address: fundMe.address,
-            constructorArguments: [LOCK_TIME, dataFeedAddr],
-        });
-    }
+    // if (hre.network.config.chainId === 11155111 && ETHERSCAN_API_KEY) {
+    //     await hre.run("verify:verify", {
+    //         address: fundMe.address,
+    //         constructorArguments: [LOCK_TIME, dataFeedAddr],
+    //     });
+    // }
 
 }
 

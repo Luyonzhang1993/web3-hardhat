@@ -2,9 +2,10 @@ const { ethers, getNamedAccounts, deployments, network} = require('hardhat');
 const { assert, expect } = require('chai');
 const { networkConfig, developmentChains} = require('../../helper-hardhat-config');
 const helpers = require("@nomicfoundation/hardhat-network-helpers");
-
 require('hardhat-deploy');
 
+// only local network run!
+!developmentChains.includes(network.name) ? describe.skip("skip") :
 describe("test FundMe contract", async function () {
     let fundMe, fundMeSecondAccount;
     let firstAccount, secondAccount;
@@ -85,11 +86,44 @@ describe("test FundMe contract", async function () {
         }
     )
 
-    // it(
-    //     "is owner, window open, target reached, getFund failed",
-    //     async function () {
-    //         const fundValue = ethers.parseEther("1")
-    //         await fundMe.fund({ value: fundValue })
-    //     }
-    // )
+    it(
+        "window open, target reached, getFund failed",
+        async function () {
+            await fundMe.fund({ value: ethers.parseEther("1") })
+            await expect(fundMe.getFund())
+                .to.be.revertedWith("Lock time is not full.");
+        }
+    )
+
+    it(
+        "window closed, target not reached, getFund failed",
+        async function () {
+            await fundMe.fund({ value: ethers.parseEther("0.1") })
+            await helpers.time.increase(200);
+            await helpers.mine();
+            await expect(fundMe.getFund())
+                .to.be.revertedWith("Target is not reached");
+        }
+    )
+
+    it(
+        "window open, fund more then minimum, fund successfully.",
+        async function () {
+            await fundMeSecondAccount.fund({ value: ethers.parseEther("0.1") })
+            const balance = await fundMe.fundersToAmount(secondAccount)
+            expect(balance).to.equal(ethers.parseEther("0.1"))
+        }
+    )
+
+    it(
+        "window closed, target reached, fund successfully.",
+        async function () {
+            await fundMe.fund({ value: ethers.parseEther("1") })
+            await helpers.time.increase(200);
+            await helpers.mine();
+            await expect(fundMe.getFund())
+                .to.emit(fundMe, "FundWithDrawByOwner")
+                .withArgs(ethers.parseEther("1"))
+        }
+    )
 })

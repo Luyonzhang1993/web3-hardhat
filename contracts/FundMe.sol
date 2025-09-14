@@ -23,6 +23,9 @@ contract FundMe {
 
     bool public getFundSuccess = false;
 
+    event FundWithDrawByOwner(uint256);
+    event ReFundWithAccount(address, uint256);
+
     constructor (uint256 _lockTime, address dataFeedAddr) {
         // sepolia testnet
 //        dataFeed = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
@@ -73,20 +76,24 @@ contract FundMe {
         /**
             call: transfer eth with data return value of function and bool;
         */
-        (bool success, ) = payable(msg.sender).call{value: address(this).balance}("");
+        bool success;
+        uint256 balance = address(this).balance;
+        (success, ) = payable(msg.sender).call{value: balance}("");
         require(success, "transfer tx failed");
         fundersToAmount[msg.sender] = 0;
         getFundSuccess = true;
+        emit FundWithDrawByOwner(balance);
     }
 
-    function refund () external windowClosed returns (bool, bytes memory) {
+    function refund () external windowClosed {
         require(convertEthToUsd(address(this).balance) < TARGET, "fund is less than target.");
         uint256 amount = fundersToAmount[msg.sender];
         require(amount != 0, "There is no fund.");
-        (bool success, bytes memory returnData) = payable(msg.sender).call{value: address(this).balance}("");
+        uint256 balance = address(this).balance;
+        (bool success, ) = payable(msg.sender).call{value: balance}("");
         require(success, "transfer tx failed");
         fundersToAmount[msg.sender] = 0;
-        return (success, returnData);
+        emit ReFundWithAccount(msg.sender, balance);
     }
 
     function getFunderToAmount (address funder) public view returns (uint256) {
